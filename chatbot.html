@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kikiviell - Professional Experience Portfolio</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter & Fira Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- Konfigurasi & Gaya Kustom -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    colors: {
+                        // NEW LIGHT THEME PALETTE
+                        'primary': '#2563EB', // A professional, strong blue
+                        'white': '#FFFFFF',
+                        'background': '#F8F9FA', // Off-white for body background
+                        'card': '#FFFFFF', // White for cards
+                        'heading': '#1a202c', // Very dark gray for headings
+                        'body': '#2d3748',    // Dark gray for body text
+                        'muted': '#718096',   // Lighter gray for muted text
+                        'border': '#E2E8F0',  // Light gray for borders
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.7s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                          '0%': { opacity: '0', transform: 'translateY(20px)' },
+                          '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .animated-element { opacity: 0; }
+        .glow-effect { box-shadow: 0 0 15px theme('colors.primary/30%'), 0 0 5px theme('colors.primary/20%'); }
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="bg-background text-body font-sans antialiased">
+
+    <canvas id="background-canvas"></canvas>
+
+    <!-- Header -->
+    <header id="navbar" class="bg-background/80 backdrop-blur-sm sticky top-0 z-50 transition-all duration-300">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-mono font-bold text-primary">KV</a>
+            <a href="/resume.pdf" target="_blank" class="font-mono text-sm border border-primary text-primary px-4 py-2 rounded-md hover:bg-primary/10 transition-colors">Resume</a>
+        </nav>
+    </header>
+
+    <!-- Mobile Menu (Removed) -->
+
+
+    <main class="container mx-auto px-6 md:px-16 lg:px-32 relative z-10">
+
+        <!-- Hero Section -->
+        <section id="home" class="min-h-screen flex items-center pt-20 pb-10">
+            <div class="max-w-4xl">
+                <p class="text-primary text-base font-mono animated-element" style="animation-delay: 100ms;">Hi, my name is</p>
+                <h1 class="text-4xl sm:text-6xl lg:text-7xl font-bold text-heading mt-3 animated-element" style="animation-delay: 200ms;">Kikiviell.</h1>
+                <h2 class="text-3xl sm:text-5xl lg:text-6xl font-bold text-muted mt-2 animated-element" style="animation-delay: 300ms;">I build digital experiences.</h2>
+                <p class="mt-6 max-w-xl text-lg animated-element" style="animation-delay: 400ms;">
+                    I'm a <span class="text-primary">UI/UX Designer</span> and <span class="text-primary">Frontend Developer</span> passionate about creating intuitive, beautiful, and useful digital products. Currently, I'm focused on building accessible products at <a href="#" class="text-primary font-semibold hover:underline">My Current Company</a>.
+                </p>
+                <div class="mt-12 animated-element" style="animation-delay: 500ms;">
+                    <a href="#work" class="bg-primary text-white font-bold text-lg px-8 py-4 rounded-md hover:bg-opacity-90 transition-all duration-300 inline-block glow-effect">
+                        Check Out My Work
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-24">
+            <h2 class="section-heading animated-element"><span class="text-primary font-mono text-2xl mr-2">01.</span> About Me</h2>
+            <div class="grid md:grid-cols-5 gap-12 items-start">
+                <div class="md:col-span-3 text-lg animated-element" style="animation-delay: 200ms;">
+                     <p class="mb-4">Hello! I'm Kikiviell, a professional passionate about creating digital solutions. My journey in tech began in 2018 when I tried to build a simple website—it turns out, that changed my life's path.</p>
+                     <p class="mb-4">Now, after several years, I've had the honor of working at a <a href="#" class="text-primary font-semibold">large corporation</a>, a <a href="#" class="text-primary font-semibold">promising startup</a>, and leading innovative projects. My main focus is creating products that are not only functional but also provide a delightful user experience.</p>
+                     <p class="mb-4">Here are a few technologies I've been working with recently:</p>
+                    <ul class="grid grid-cols-2 gap-2 font-mono text-sm text-body">
+                        <li class="flex items-center"><i data-lucide="chevrons-right" class="w-4 h-4 text-primary mr-2"></i>Figma</li>
+                        <li class="flex items-center"><i data-lucide="chevrons-right" class="w-4 h-4 text-primary mr-2"></i>JavaScript (ES6+)</li>
+                        <li class="flex items-center"><i data-lucide="chevrons-right" class="w-4 h-4 text-primary mr-2"></i>React & Next.js</li>
+                        <li class="flex items-center"><i data-lucide="chevrons-right" class="w-4 h-4 text-primary mr-2"></i>Tailwind CSS</li>
+                        <li class="flex items-center"><i data-lucide="chevrons-right" class="w-4 h-4 text-primary mr-2"></i>Node.js</li>
+                        <li class="flex items-center"><i data-lucide="chevrons-right" class="w-4 h-4 text-primary mr-2"></i>Design Systems</li>
+                    </ul>
+                </div>
+                <div class="md:col-span-2 flex justify-center items-center animated-element" style="animation-delay: 400ms;">
+                    <div class="w-full max-w-[300px] relative group">
+                        <div class="absolute -inset-0.5 bg-gradient-to-r from-primary to-blue-300 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                        <div class="relative w-full h-auto bg-card rounded-lg p-1">
+                          <img src="https://placehold.co/400x400/F8F9FA/1a202c?text=Kikiviell" alt="Profile picture of Kikiviell" class="rounded-md w-full h-auto object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x400/FFFFFF/000000?text=Error';">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Experience Section -->
+        <section id="experience" class="py-24 max-w-4xl mx-auto">
+             <h2 class="section-heading animated-element"><span class="text-primary font-mono text-2xl mr-2">02.</span> Where I've Worked</h2>
+             <div class="flex flex-col md:flex-row gap-8 mt-10 animated-element" style="animation-delay: 200ms;">
+                <!-- Tab Buttons -->
+                <div class="flex md:flex-col overflow-x-auto md:overflow-x-visible -mx-4 px-4 md:-mx-0 md:px-0">
+                    <button data-tab="1" class="tab-button active">TechCorp</button>
+                    <button data-tab="2" class="tab-button">Innovate Digital</button>
+                    <button data-tab="3" class="tab-button">Local Startup</button>
+                </div>
+                <!-- Tab Content -->
+                <div class="flex-grow">
+                    <div data-tab-content="1" class="tab-content active">
+                        <h3 class="text-xl font-bold text-heading">Senior UI/UX Designer <span class="text-primary">@ TechCorp</span></h3>
+                        <p class="font-mono text-sm mb-4 text-muted">Jan 2022 - Present</p>
+                        <ul class="space-y-3">
+                            <li class="exp-item">Led the redesign of the company's main mobile application, increasing user satisfaction by 25%.</li>
+                            <li class="exp-item">Built and maintained a design system used by 5 different product teams, improving consistency and development efficiency.</li>
+                            <li class="exp-item">Conducted in-depth user research, including interviews and usability testing, to inform strategic design decisions.</li>
+                        </ul>
+                    </div>
+                    <div data-tab-content="2" class="tab-content">
+                        <h3 class="text-xl font-bold text-heading">Frontend Developer <span class="text-primary">@ Innovate Digital</span></h3>
+                        <p class="font-mono text-sm mb-4 text-muted">Mar 2020 - Dec 2021</p>
+                        <ul class="space-y-3">
+                            <li class="exp-item">Developed and maintained user interfaces for a B2B SaaS platform using React and TypeScript.</li>
+                            <li class="exp-item">Collaborated closely with UI/UX designers to translate Figma mockups into responsive, pixel-perfect code.</li>
+                            <li class="exp-item">Optimized web application performance, reducing page load times by up to 40%.</li>
+                        </ul>
+                    </div>
+                    <div data-tab-content="3" class="tab-content">
+                        <h3 class="text-xl font-bold text-heading">Junior Web Developer <span class="text-primary">@ Local Startup</span></h3>
+                        <p class="font-mono text-sm mb-4 text-muted">Jun 2018 - Feb 2020</p>
+                        <ul class="space-y-3">
+                            <li class="exp-item">Helped develop various marketing websites for clients using HTML, CSS, and JavaScript.</li>
+                            <li class="exp-item">Learned and adapted quickly in a dynamic startup environment, contributing to multiple projects simultaneously.</li>
+                        </ul>
+                    </div>
+                </div>
+             </div>
+        </section>
+
+        <!-- Work Section -->
+        <section id="work" class="py-24">
+            <h2 class="section-heading animated-element"><span class="text-primary font-mono text-2xl mr-2">03.</span> Some Things I've Built</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+                <!-- Project Card 1 -->
+                <div class="project-card animated-element" style="animation-delay: 100ms;">
+                    <div class="flex justify-between items-center mb-4">
+                        <i data-lucide="folder" class="text-primary w-10 h-10"></i>
+                        <a href="#" class="hover:text-primary"><i data-lucide="external-link" class="w-6 h-6"></i></a>
+                    </div>
+                    <h3 class="text-xl font-bold text-heading mb-2 group-hover:text-primary">Crypto Analytics Platform</h3>
+                    <p class="text-sm mb-4">A complex dashboard for visualizing real-time cryptocurrency market data.</p>
+                    <ul class="flex flex-wrap gap-x-4 font-mono text-xs text-muted">
+                        <li>React</li>
+                        <li>Chart.js</li>
+                        <li>Tailwind CSS</li>
+                    </ul>
+                </div>
+                <!-- Project Card 2 -->
+                <div class="project-card animated-element" style="animation-delay: 200ms;">
+                    <div class="flex justify-between items-center mb-4">
+                        <i data-lucide="folder" class="text-primary w-10 h-10"></i>
+                        <a href="#" class="hover:text-primary"><i data-lucide="external-link" class="w-6 h-6"></i></a>
+                    </div>
+                    <h3 class="text-xl font-bold text-heading mb-2 group-hover:text-primary">E-commerce PWA</h3>
+                    <p class="text-sm mb-4">A fast and reliable online shopping experience, installable on mobile devices (PWA).</p>
+                    <ul class="flex flex-wrap gap-x-4 font-mono text-xs text-muted">
+                        <li>Next.js</li>
+                        <li>GraphQL</li>
+                        <li>Stripe API</li>
+                    </ul>
+                </div>
+                <!-- Project Card 3 -->
+                <div class="project-card animated-element" style="animation-delay: 300ms;">
+                     <div class="flex justify-between items-center mb-4">
+                        <i data-lucide="folder" class="text-primary w-10 h-10"></i>
+                        <a href="#" class="hover:text-primary"><i data-lucide="external-link" class="w-6 h-6"></i></a>
+                    </div>
+                    <h3 class="text-xl font-bold text-heading mb-2 group-hover:text-primary">Internal Design System</h3>
+                    <p class="text-sm mb-4">Building a library of reusable UI components to accelerate development.</p>
+                    <ul class="flex flex-wrap gap-x-4 font-mono text-xs text-muted">
+                        <li>Figma</li>
+                        <li>Storybook</li>
+                        <li>TypeScript</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-24 text-center max-w-xl mx-auto">
+             <p class="font-mono text-primary animated-element">04. What's Next?</p>
+             <h2 class="text-5xl font-bold text-heading mt-4 mb-4 animated-element" style="animation-delay: 100ms;">Get In Touch</h2>
+             <p class="text-lg mb-8 animated-element" style="animation-delay: 200ms;">
+                I'm currently open to new opportunities and always happy to discuss exciting projects. Feel free to send a message, and I'll do my best to get back to you!
+             </p>
+             <div class="animated-element" style="animation-delay: 300ms;">
+                <a href="mailto:emailanda@contoh.com" class="bg-primary text-white font-bold text-lg px-8 py-4 rounded-md hover:bg-opacity-90 transition-all duration-300 inline-block glow-effect">Say Hello</a>
+             </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-8 text-center font-mono text-sm text-muted">
+        <p>Designed & Built by Kikiviell</p>
+        <p>Inspired by Brittany Chiang</p>
+    </footer>
+
+    <style>
+        .section-heading {
+            @apply flex items-center text-3xl font-bold text-heading w-full mb-10;
+        }
+        .section-heading::after {
+            content: '';
+            @apply block h-px w-full bg-border ml-4;
+        }
+        .tab-button {
+            @apply px-4 py-3 whitespace-nowrap font-mono text-sm border-b-2 md:border-b-0 md:border-l-2 border-border text-muted transition-all duration-300;
+        }
+        .tab-button.active {
+            @apply text-primary bg-primary/10 border-primary;
+        }
+        .tab-content {
+            @apply hidden;
+        }
+        .tab-content.active {
+            @apply block;
+        }
+        .exp-item {
+            @apply relative pl-8 text-body;
+        }
+        .exp-item::before {
+            content: '▹';
+            @apply absolute left-0 text-primary;
+        }
+        .project-card {
+            @apply bg-card p-6 rounded-md shadow-lg transition-all duration-300 hover:-translate-y-2 cursor-pointer group border border-border hover:shadow-xl;
+        }
+    </style>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            // --- Background Canvas Animation ---
+            const canvas = document.getElementById('background-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            const particleColor = 'rgba(45, 55, 72, 0.25)'; // body text with alpha
+
+            const resizeCanvas = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            };
+            
+            const createParticles = () => {
+                particles = [];
+                const particleCount = Math.floor((canvas.width * canvas.height) / 20000);
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        vx: (Math.random() - 0.5) * 0.3,
+                        vy: (Math.random() - 0.5) * 0.3,
+                        radius: Math.random() * 1.5 + 1
+                    });
+                }
+            };
+
+            const animate = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = particleColor;
+                    ctx.fill();
+                });
+
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i; j < particles.length; j++) {
+                        const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
+                        if (dist < 150) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = `rgba(45, 55, 72, ${0.8 - dist / 150})`; // Fades with distance
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animate);
+            };
+
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                createParticles();
+            });
+
+            resizeCanvas();
+            createParticles();
+            animate();
+
+            // --- UI Logic ---
+
+            // Navbar Scroll Logic
+            let lastScrollTop = 0;
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > 100) {
+                    navbar.style.top = '-100px';
+                } else {
+                    navbar.style.top = '0';
+                }
+                if (scrollTop > 50) {
+                    navbar.classList.add('shadow-md');
+                } else {
+                    navbar.classList.remove('shadow-md');
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            });
+
+            // Experience Tab Logic
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+                    
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    tabContents.forEach(content => {
+                        if (content.dataset.tabContent === tabId) {
+                            content.classList.add('active');
+                        } else {
+                            content.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            // Animation on Scroll Logic
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in-up');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animated-element').forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>

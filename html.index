@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot AI dengan Gemini</title>
+    <!-- Memuat Tailwind CSS untuk styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Memuat Google Fonts (Inter) untuk tampilan teks yang lebih baik -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Menggunakan font Inter sebagai font utama */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style untuk scrollbar agar lebih minimalis */
+        #chat-window::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chat-window::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        #chat-window::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        #chat-window::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Style untuk tombol fitur tambahan */
+        .feature-btn {
+            @apply px-4 py-2 text-sm font-medium text-white bg-violet-600 rounded-lg hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <!-- Kontainer Utama Aplikasi Chat -->
+    <div class="w-full max-w-2xl h-[90vh] bg-white rounded-2xl shadow-2xl flex flex-col p-4 m-4">
+        
+        <!-- Header Aplikasi -->
+        <header class="border-b pb-4 mb-4 text-center">
+            <h1 class="text-2xl font-bold text-gray-800">Chatbot AI Gemini</h1>
+            <p class="text-sm text-gray-500">Didukung oleh Google Gemini</p>
+            <!-- Tombol Fitur Tambahan -->
+            <div class="flex justify-center space-x-3 mt-3">
+                <button id="summarize-btn" class="feature-btn">✨ Ringkas Percakapan</button>
+                <button id="new-topic-btn" class="feature-btn">✨ Sarankan Topik Baru</button>
+            </div>
+        </header>
+
+        <!-- Jendela Chat untuk Menampilkan Pesan -->
+        <main id="chat-window" class="flex-grow overflow-y-auto p-4 space-y-6 bg-gray-50 rounded-lg">
+            <!-- Pesan akan ditambahkan di sini oleh JavaScript -->
+        </main>
+
+        <!-- Indikator saat AI sedang mengetik/memproses -->
+        <div id="loading-indicator" class="hidden flex items-center justify-center p-2">
+            <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 bg-gray-500 rounded-full animate-pulse"></div>
+                <div class="w-2 h-2 bg-gray-500 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+                <div class="w-2 h-2 bg-gray-500 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+                <span class="text-sm text-gray-500 ml-2">AI sedang memproses...</span>
+            </div>
+        </div>
+
+        <!-- Form untuk Input Pesan Pengguna -->
+        <footer class="mt-4">
+            <form id="chat-form" class="flex items-center space-x-2">
+                <input 
+                    type="text" 
+                    id="user-input" 
+                    placeholder="Ketik pesan Anda di sini..." 
+                    autocomplete="off"
+                    class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+                <button 
+                    type="submit"
+                    id="send-btn"
+                    class="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-transform transform active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </form>
+        </footer>
+    </div>
+
+    <script>
+        // --- Seleksi Elemen DOM ---
+        const chatWindow = document.getElementById('chat-window');
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const sendButton = document.getElementById('send-btn');
+        const summarizeButton = document.getElementById('summarize-btn');
+        const newTopicButton = document.getElementById('new-topic-btn');
+
+        // --- Variabel State Aplikasi ---
+        let chatHistory = []; // Menyimpan riwayat percakapan untuk konteks
+        let isProcessing = false; // Mencegah beberapa permintaan sekaligus
+
+        // --- Fungsi Utama ---
+
+        /**
+         * Mengunci dan membuka UI selama pemrosesan AI.
+         * @param {boolean} lock - True untuk mengunci, false untuk membuka.
+         */
+        const setUiLock = (lock) => {
+            isProcessing = lock;
+            sendButton.disabled = lock;
+            summarizeButton.disabled = lock;
+            newTopicButton.disabled = lock;
+            if (lock) {
+                loadingIndicator.classList.remove('hidden');
+            } else {
+                loadingIndicator.classList.add('hidden');
+                userInput.focus();
+            }
+        };
+
+        /**
+         * Menangani pengiriman form saat pengguna mengirim pesan.
+         * @param {Event} event - Objek event dari form submission.
+         */
+        const handleFormSubmit = async (event) => {
+            event.preventDefault();
+            if (isProcessing) return;
+            
+            const userMessage = userInput.value.trim();
+            if (!userMessage) return;
+
+            displayMessage(userMessage, 'user');
+            userInput.value = '';
+            setUiLock(true);
+
+            // Tambahkan pesan ke riwayat SEBELUM mengirim ke AI
+            chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
+
+            const aiResponse = await callGeminiAPI(chatHistory);
+            
+            // Tambahkan respons AI ke riwayat
+            if (aiResponse) {
+                chatHistory.push({ role: "model", parts: [{ text: aiResponse }] });
+                displayMessage(aiResponse, 'assistant');
+            }
+            
+            setUiLock(false);
+        };
+        
+        /**
+         * Fungsi generik untuk memanggil API Gemini.
+         * @param {Array} history - Riwayat percakapan untuk dikirim sebagai konteks.
+         * @returns {Promise<string|null>} - Teks respons dari AI atau null jika gagal.
+         */
+        const callGeminiAPI = async (history) => {
+            const payload = {
+                contents: history,
+            };
+            
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error.message || `Error API: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    // Handle kasus ketika tidak ada kandidat respons
+                    console.warn("API tidak mengembalikan kandidat.", result);
+                    displayMessage("Maaf, saya menerima respons yang tidak terduga dari AI.", 'error');
+                    return null;
+                }
+
+            } catch (error) {
+                console.error("Terjadi kesalahan saat memanggil API Gemini:", error);
+                displayMessage(`Terjadi kesalahan: ${error.message}. Coba lagi nanti.`, 'error');
+                return null;
+            }
+        };
+
+        /**
+         * Menampilkan pesan di jendela chat.
+         * @param {string} message - Teks pesan.
+         * @param {'user' | 'assistant' | 'error' | 'system'} sender - Pengirim pesan.
+         */
+        const displayMessage = (message, sender) => {
+            const messageContainer = document.createElement('div');
+            
+            let messageBubble;
+            const baseBubbleClasses = 'max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-2xl';
+
+            switch(sender) {
+                case 'user':
+                    messageContainer.className = 'flex items-end justify-end';
+                    messageBubble = `<div class="${baseBubbleClasses} rounded-br-none bg-blue-600 text-white"><p>${message}</p></div>`;
+                    break;
+                case 'assistant':
+                    messageContainer.className = 'flex items-end justify-start';
+                    messageBubble = `<div class="${baseBubbleClasses} rounded-bl-none bg-gray-200 text-gray-800"><p>${message}</p></div>`;
+                    break;
+                case 'system':
+                    messageContainer.className = 'flex items-center justify-center';
+                    messageBubble = `<div class="w-full max-w-lg p-3 my-2 rounded-lg bg-violet-100 text-violet-800 border border-violet-200 text-sm"><p class="font-semibold mb-1">✨ Hasil AI</p><p>${message}</p></div>`;
+                    break;
+                case 'error':
+                    messageContainer.className = 'flex items-center justify-center';
+                    messageBubble = `<div class="p-3 rounded-lg bg-red-100 text-red-700 text-sm"><p>${message}</p></div>`;
+                    break;
+            }
+            
+            messageContainer.innerHTML = messageBubble;
+            chatWindow.appendChild(messageContainer);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        };
+
+        /**
+         * Menangani klik tombol "Ringkas Percakapan".
+         */
+        const handleSummarize = async () => {
+            if (isProcessing) return;
+            // Membutuhkan setidaknya 2 giliran (1 user, 1 AI) untuk diringkas
+            if (chatHistory.length < 2) {
+                displayMessage("Tidak cukup percakapan untuk diringkas. Coba mengobrol lebih banyak!", 'system');
+                return;
+            }
+            
+            setUiLock(true);
+
+            // Buat prompt khusus untuk meringkas
+            const summaryHistory = [...chatHistory, {
+                role: "user",
+                parts: [{ text: "Berdasarkan percakapan di atas, tolong berikan ringkasan singkat dalam satu paragraf." }]
+            }];
+            
+            const summary = await callGeminiAPI(summaryHistory);
+            if (summary) {
+                displayMessage(summary, 'system');
+            }
+
+            setUiLock(false);
+        };
+
+        /**
+         * Menangani klik tombol "Sarankan Topik Baru".
+         */
+        const handleNewTopic = async () => {
+            if (isProcessing) return;
+            setUiLock(true);
+            
+            // Buat prompt untuk topik baru
+            const topicHistory = [{
+                role: "user",
+                parts: [{ text: "Berikan aku satu ide topik pembicaraan yang menarik dan unik. Cukup berikan topiknya saja." }]
+            }];
+
+            const topicSuggestion = await callGeminiAPI(topicHistory);
+            if (topicSuggestion) {
+                // Tampilkan sebagai pesan sistem, lalu otomatis kirim sebagai pesan user
+                displayMessage(`Saran topik: **${topicSuggestion}**. Saya akan memulai percakapan tentang ini.`, 'system');
+                
+                // Tambahkan ke riwayat seolah-olah user yang mengetik
+                chatHistory.push({ role: "user", parts: [{ text: topicSuggestion }] });
+                displayMessage(topicSuggestion, 'user');
+                
+                // Dapatkan respons AI untuk topik baru ini
+                const aiResponse = await callGeminiAPI(chatHistory);
+                if (aiResponse) {
+                    chatHistory.push({ role: "model", parts: [{ text: aiResponse }] });
+                    displayMessage(aiResponse, 'assistant');
+                }
+            }
+
+            setUiLock(false);
+        };
+
+
+        // --- Event Listeners ---
+        chatForm.addEventListener('submit', handleFormSubmit);
+        summarizeButton.addEventListener('click', handleSummarize);
+        newTopicButton.addEventListener('click', handleNewTopic);
+
+
+        // --- Inisialisasi Aplikasi ---
+        window.onload = () => {
+             const welcomeMessage = 'Halo! Saya adalah asisten AI dari Google. Anda bisa mengobrol dengan saya atau coba fitur ✨ di atas. Ada yang bisa saya bantu?';
+             chatHistory.push({ role: "model", parts: [{ text: welcomeMessage }] });
+             displayMessage(welcomeMessage, 'assistant');
+             userInput.focus();
+        };
+
+    </script>
+</body>
+</html>
